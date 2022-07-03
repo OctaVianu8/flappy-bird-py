@@ -7,6 +7,7 @@ from pipe_obj import PipeObj
 from sprites import *
 from background import Background
 
+
 # Creating the window
 pygame.init()
 size = width, height = 800, 800
@@ -14,7 +15,7 @@ win = pygame.display.set_mode(size)
 pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
 fps = 24
-score =0
+score = 0
 
 # Constants
 BLACK = (0, 0, 0)
@@ -74,6 +75,20 @@ background = Background()
 def logic():
     background.update()
     bird.update()
+    
+    global score
+    bird_rect = pygame.Rect(bird.x, bird.y, upflap.get_width(), upflap.get_height())
+    for pipe_pair in pipes:
+        pipe_up_rect = pygame.Rect(pipe_pair.x, pipe_pair.y_up, pipe.get_width(), pipe.get_height())
+        pipe_down_rect = pygame.Rect(pipe_pair.x, pipe_pair.y_down, pipe.get_width(), pipe.get_height())
+
+        if bird_rect.colliderect(pipe_up_rect) or bird_rect.colliderect(pipe_down_rect):
+            return False
+        
+        if abs(bird.x - (pipe_pair.x + pipe_down.get_width() / 2) ) <= 3:
+            score += 1
+            print("caca", score)
+
     for pipe_pair in pipes:
         if pipe_pair.x + 55 <= 0:
             pipes.remove(pipe_pair)
@@ -82,28 +97,27 @@ def logic():
     
     for pipe_pair in pipes:
         pipe_pair.move()
-    toAdd = False
+    
     for ground in bases:
         if (ground.x + base.get_width() <= 4):
             ground.x = width
-            toAdd = True
-        #print(ground.x + base.get_width())
-    #print("//-------------------------------")
     for ground in bases:
         ground.move()
-    return
+    return True
 
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                bird.resetSpeed()
-    logic()
-    draw()
-    pygame.display.update()
-    clock.tick(fps)
+if __name__ == "__main__":
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    bird.resetSpeed()
+        if not logic():
+            break
+        draw()
+        pygame.display.update()
+        clock.tick(fps)
 
 pygame.quit()
 sys.exit()
