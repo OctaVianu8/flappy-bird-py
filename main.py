@@ -66,6 +66,22 @@ def initialize():
     
 background = Background()
 
+def draw_number(num, x, y):
+    digits = []
+    while num > 0:
+        digits.append(num % 10)
+        num //= 10
+    if len(digits) == 0: digits.append(0)
+    digits.reverse()
+
+    num_width = 0
+    for digit in digits:
+        num_width += score_sprites[str(digit)].get_width()
+    
+    for digit in digits:
+        win.blit(score_sprites[str(digit)], (x - num_width, y))
+        num_width -= score_sprites[str(digit)].get_width()
+
 def draw():
     win.fill((0,0,0))
     background.draw()
@@ -75,22 +91,8 @@ def draw():
     
     for ground in bases:
         ground.draw()
-    #draw score
-    tmp = score
-    digits = []
-    while tmp > 0:
-        digits.append(tmp % 10)
-        tmp //= 10
-    if len(digits) == 0: digits.append(0)
-    digits.reverse()
 
-    score_width = 0
-    for digit in digits:
-        score_width += score_sprites[str(digit)].get_width()
-
-    for digit in digits:
-        win.blit(score_sprites[str(digit)], (WIDTH - score_width - 50, 50))
-        score_width -= score_sprites[str(digit)].get_width()
+    draw_number(score, WIDTH - 50, 50)
     return
 
 def logic():
@@ -142,10 +144,12 @@ def logic():
     return True
 
 def draw_start_screen():
-    win.fill(BLACK)
+    draw_number(high_score, 400, 250)
 
 while True :
     initialize()
+    draw_start_screen()
+    pygame.display.update()
 
     running = False
     while running == False :
