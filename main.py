@@ -1,48 +1,34 @@
 import sys
 import random
 import pygame
+import time
 
 from bird_obj import BirdObj
 from pipe_obj import PipeObj
+from base_obj import BaseObj
 from sprites import *
+from constants import *
+from sounds import *
 from background import Background
 
 
 # Creating the window
 pygame.init()
-size = width, height = 800, 800
-win = pygame.display.set_mode(size)
 pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
-fps = 24
 score = 0
-
-# Constants
-BLACK = (0, 0, 0)
-PIPE_SPEED = 5
-GAP_SIZE = 100
 
 running = True
 
+print("ma pis pe python")
+
 bird = BirdObj(300,400)
-
-class BaseObj:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-    
-    def draw(self):
-        win.blit(base, (self.x, self.y))
-    
-    def move(self):
-        self.x -= PIPE_SPEED 
-
-
+background = Background()
 pipes = [PipeObj(500,0,650),PipeObj(800,0,650)]
-bases = [BaseObj(0,height-base.get_height()),
-    BaseObj(base.get_width(),height-base.get_height()),
-    BaseObj(2*base.get_width(),height-base.get_height()),
-    BaseObj(3*base.get_width(),height-base.get_height())]
+bases = [BaseObj(0,HEIGHT-BASE_HEIGHT),
+    BaseObj(base.get_width(),HEIGHT-BASE_HEIGHT),
+    BaseObj(2*base.get_width(),HEIGHT-BASE_HEIGHT),
+    BaseObj(3*base.get_width(),HEIGHT-BASE_HEIGHT)]
 
 def draw():
     win.fill((0,0,0))
@@ -66,41 +52,55 @@ def draw():
         score_width += score_sprites[str(digit)].get_width()
 
     for digit in digits:
-        win.blit(score_sprites[str(digit)], (width - score_width - 50, 50))
+        win.blit(score_sprites[str(digit)], (WIDTH - score_width - 50, 50))
         score_width -= score_sprites[str(digit)].get_width()
     return
-
-background = Background()
 
 def logic():
     background.update()
     bird.update()
     
+    # Sky collision
+    if bird.y + BIRD_HEIGHT / 2 <= 0:
+        hit_sound.play()
+        time.sleep(0.5)
+        return False
+
     global score
-    bird_rect = pygame.Rect(bird.x, bird.y, upflap.get_width(), upflap.get_height())
+    bird_rect = pygame.Rect(bird.x, bird.y, upflap.get_width(), BIRD_HEIGHT)
     for pipe_pair in pipes:
-        pipe_up_rect = pygame.Rect(pipe_pair.x, pipe_pair.y_up, pipe.get_width(), pipe.get_height())
-        pipe_down_rect = pygame.Rect(pipe_pair.x, pipe_pair.y_down, pipe.get_width(), pipe.get_height())
+        pipe_up_rect = pygame.Rect(pipe_pair.x, pipe_pair.y_up, pipe.get_width(), PIPE_HEIGHT)
+        pipe_down_rect = pygame.Rect(pipe_pair.x, pipe_pair.y_down, pipe.get_width(), PIPE_HEIGHT)
 
         if bird_rect.colliderect(pipe_up_rect) or bird_rect.colliderect(pipe_down_rect):
+            hit_sound.play()
+            time.sleep(0.5)
             return False
         
         if abs(bird.x - (pipe_pair.x + pipe_down.get_width() / 2) ) <= 3:
             score += 1
+            point_sound.play()
             print("caca", score)
 
     for pipe_pair in pipes:
         if pipe_pair.x + 55 <= 0:
             pipes.remove(pipe_pair)
             new_height = random.randint(-25, 0)
-            pipes.append(PipeObj(width + 55, new_height, new_height + GAP_SIZE + pipe_up.get_height()))
+            pipes.append(PipeObj(WIDTH + 55, new_height, new_height + GAP_SIZE + PIPE_HEIGHT))
     
     for pipe_pair in pipes:
         pipe_pair.move()
     
     for ground in bases:
+        ground_rect = pygame.Rect(ground.x, ground.y, base.get_width(), BASE_HEIGHT)
+
+        if bird_rect.colliderect(ground_rect):
+            hit_sound.play()
+            time.sleep(0.5)
+            return False
+    for ground in bases:
         if (ground.x + base.get_width() <= 4):
-            ground.x = width
+            ground.x = WIDTH
     for ground in bases:
         ground.move()
     return True
@@ -113,11 +113,14 @@ if __name__ == "__main__":
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     bird.resetSpeed()
+            if event.type == pygame.MOUSEBUTTONUP:
+                wing_sound.play()
+                bird.resetSpeed()
         if not logic():
             break
         draw()
         pygame.display.update()
-        clock.tick(fps)
+        clock.tick(FPS)
 
 pygame.quit()
 sys.exit()

@@ -1,13 +1,6 @@
 import pygame
 from sprites import *
-
-size = width, height = 800, 800
-win = pygame.display.set_mode(size)
-
-# Constants
-BLACK = (0, 0, 0)
-PIPE_SPEED = 5
-GAP_SIZE = 100
+from constants import *
 
 class PipeObj:
     def __init__(self, x, y_up, y_down):
