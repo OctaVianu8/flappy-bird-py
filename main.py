@@ -4,7 +4,7 @@ import random
 import pygame
 import time
 
-from bird_obj import BirdObj
+from bird_obj import *
 from pipe_obj import *
 from base_obj import *
 from sprites import *
@@ -18,7 +18,7 @@ pygame.init()
 pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
 
-running = True
+score = 0
 
 bird = BirdObj(birdX,400)
 
@@ -38,15 +38,19 @@ pipes = []
 bases = []
 
 def initialize():
+    global score
+    score = 0
+    pipes.clear()
+    bases.clear()
+    bird.y=400
+    bird.birdFallSpeed=0
     draw()
     for i in range(2,5):
         new_height = random.randint(-280, 0)
-        pipes.append(PipeObj(300*i,new_height,new_height + GAP_SIZE + pipeHeight))
+        pipes.append(PipeObj(300*i,new_height,new_height + GAP_SIZE + PIPE_HEIGHT))
     for i in range(4):
-        bases.append(BaseObj(i*base.get_width(),height-base.get_height()))
+        bases.append(BaseObj(i*BASE_WIDTH, HEIGHT-BASE_HEIGHT))
     
-score = 0
-
 background = Background()
 
 def draw():
@@ -87,39 +91,38 @@ def logic():
         return False
 
     global score
-    bird_rect = pygame.Rect(bird.x, bird.y, upflap.get_width(), BIRD_HEIGHT)
+    bird_rect = pygame.Rect(bird.x, bird.y, BIRD_WIDTH, BIRD_HEIGHT)
     for pipe_pair in pipes:
-        pipe_up_rect = pygame.Rect(pipe_pair.x, pipe_pair.y_up, pipe.get_width(), PIPE_HEIGHT)
-        pipe_down_rect = pygame.Rect(pipe_pair.x, pipe_pair.y_down, pipe.get_width(), PIPE_HEIGHT)
+        pipe_up_rect = pygame.Rect(pipe_pair.x, pipe_pair.y_up, PIPE_WIDTH, PIPE_HEIGHT)
+        pipe_down_rect = pygame.Rect(pipe_pair.x, pipe_pair.y_down, PIPE_WIDTH, PIPE_HEIGHT)
 
         if bird_rect.colliderect(pipe_up_rect) or bird_rect.colliderect(pipe_down_rect):
             hit_sound.play()
             time.sleep(0.5)
             return False
         
-        if abs(bird.x - (pipe_pair.x + pipe_down.get_width() / 2) ) <= 3:
+        if abs(bird.x - (pipe_pair.x + PIPE_WIDTH / 2) ) <= 3:
             score += 1
             point_sound.play()
-            print("caca", score)
 
     for pipe_pair in pipes:
-        if pipe_pair.x + pipeWidth <= 0:
+        if pipe_pair.x + PIPE_WIDTH <= 0:
             pipes.remove(pipe_pair)
             new_height = random.randint(-280, 0)
-            pipes.append(PipeObj(width + pipeWidth, new_height, new_height + GAP_SIZE + PIPE_HEIGHT))
+            pipes.append(PipeObj(WIDTH + PIPE_WIDTH, new_height, new_height + GAP_SIZE + PIPE_HEIGHT))
     
     for pipe_pair in pipes:
         pipe_pair.move()
 
     for ground in bases:
-        ground_rect = pygame.Rect(ground.x, ground.y, base.get_width(), BASE_HEIGHT)
+        ground_rect = pygame.Rect(ground.x, ground.y, BASE_WIDTH, BASE_HEIGHT)
 
         if bird_rect.colliderect(ground_rect):
             hit_sound.play()
             time.sleep(0.5)
             return False
     for ground in bases:
-        if (ground.x + base.get_width() <= 4):
+        if (ground.x + BASE_WIDTH <= 4):
             ground.x = WIDTH
     for ground in bases:
         ground.move()
@@ -131,6 +134,8 @@ while True :
     running = False
     while running == False :
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     running = True

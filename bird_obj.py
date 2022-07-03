@@ -7,6 +7,7 @@ birdAcceleration = 0.6
 fallResetSpeed = -15
 maxFallSpeed = 15
 maxAscentSpeed = -8
+birdX = 300
 
 class BirdObj:
     birdFallSpeed = 0
