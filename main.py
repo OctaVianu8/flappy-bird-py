@@ -39,6 +39,8 @@ pipe = pygame.image.load("assets/sprites/pipe-green.png")
 
 running = True
 
+print("ma pis pe python")
+
 bird = BirdObj(300,400)
 background = Background()
 pipes = [PipeObj(500,0,650),PipeObj(800,0,650)]
