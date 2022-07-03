@@ -33,13 +33,26 @@ class BaseObj:
     def move(self):
         self.x -= PIPE_SPEED 
 
+high_score = 0
 
 pipes = []
 bases = []
 
+def get_high_score():
+    f = open("highscore.txt", "r")
+    num = int(f.read())
+    return num
+
+def update_high_score():
+    if score > high_score:
+        with open('highscore.txt','w') as f:
+            f.write(str(score))
+
 def initialize():
-    global score
+    global score, high_score
     score = 0
+    high_score = get_high_score()
+    print(high_score)
     pipes.clear()
     bases.clear()
     bird.y=400
@@ -128,9 +141,12 @@ def logic():
         ground.move()
     return True
 
+def draw_start_screen():
+    win.fill(BLACK)
+
 while True :
     initialize()
-    
+
     running = False
     while running == False :
         for event in pygame.event.get():
@@ -141,6 +157,7 @@ while True :
                     running = True
             if event.type == pygame.MOUSEBUTTONUP:
                 running = True
+        
     
     while running:
         for event in pygame.event.get():
@@ -158,6 +175,9 @@ while True :
         draw()
         pygame.display.update()
         clock.tick(FPS)
+    
+    running = False
+    update_high_score()
 
 pygame.quit()
 sys.exit()
