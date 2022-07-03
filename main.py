@@ -1,11 +1,12 @@
+from cProfile import run
 import sys
 import random
 import pygame
 import time
 
 from bird_obj import BirdObj
-from pipe_obj import PipeObj
-from base_obj import BaseObj
+from pipe_obj import *
+from base_obj import *
 from sprites import *
 from constants import *
 from sounds import *
@@ -16,19 +17,37 @@ from background import Background
 pygame.init()
 pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
-score = 0
 
 running = True
 
-print("ma pis pe python")
+bird = BirdObj(birdX,400)
 
-bird = BirdObj(300,400)
+class BaseObj:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def draw(self):
+        win.blit(base, (self.x, self.y))
+    
+    def move(self):
+        self.x -= PIPE_SPEED 
+
+
+pipes = []
+bases = []
+
+def initialize():
+    draw()
+    for i in range(2,5):
+        new_height = random.randint(-280, 0)
+        pipes.append(PipeObj(300*i,new_height,new_height + GAP_SIZE + pipeHeight))
+    for i in range(4):
+        bases.append(BaseObj(i*base.get_width(),height-base.get_height()))
+    
+score = 0
+
 background = Background()
-pipes = [PipeObj(500,0,650),PipeObj(800,0,650)]
-bases = [BaseObj(0,HEIGHT-BASE_HEIGHT),
-    BaseObj(base.get_width(),HEIGHT-BASE_HEIGHT),
-    BaseObj(2*base.get_width(),HEIGHT-BASE_HEIGHT),
-    BaseObj(3*base.get_width(),HEIGHT-BASE_HEIGHT)]
 
 def draw():
     win.fill((0,0,0))
@@ -39,6 +58,7 @@ def draw():
     
     for ground in bases:
         ground.draw()
+    #draw score
     tmp = score
     digits = []
     while tmp > 0:
@@ -83,14 +103,14 @@ def logic():
             print("caca", score)
 
     for pipe_pair in pipes:
-        if pipe_pair.x + 55 <= 0:
+        if pipe_pair.x + pipeWidth <= 0:
             pipes.remove(pipe_pair)
-            new_height = random.randint(-25, 0)
-            pipes.append(PipeObj(WIDTH + 55, new_height, new_height + GAP_SIZE + PIPE_HEIGHT))
+            new_height = random.randint(-280, 0)
+            pipes.append(PipeObj(width + pipeWidth, new_height, new_height + GAP_SIZE + PIPE_HEIGHT))
     
     for pipe_pair in pipes:
         pipe_pair.move()
-    
+
     for ground in bases:
         ground_rect = pygame.Rect(ground.x, ground.y, base.get_width(), BASE_HEIGHT)
 
@@ -105,11 +125,20 @@ def logic():
         ground.move()
     return True
 
-if __name__ == "__main__":
+while True :
+    initialize()
+
+    running = False
+    while running == False :
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    running = True
+    
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     bird.resetSpeed()

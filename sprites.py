@@ -2,7 +2,13 @@ import pygame
 
 downflap = pygame.image.load("assets/sprites/bluebird-downflap.png")
 upflap = pygame.image.load("assets/sprites/bluebird-upflap.png")
+downflap = pygame.transform.scale(downflap,(40,40))
+upflap = pygame.transform.scale(upflap,(40,40))
+
 pipe_down = pygame.image.load("assets/sprites/pipe-green.png")
+pipeWidth = 80
+pipeHeight = 400
+pipe_down = pygame.transform.scale(pipe_down, (80,400))
 pipe_up = pygame.transform.rotate(pipe_down, 180)
 base = pygame.image.load("assets/sprites/base.png")
 score_sprites = {
