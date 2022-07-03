@@ -10,6 +10,7 @@ pipe_down = pygame.image.load("assets/sprites/pipe-green.png")
 pipe_down = pygame.transform.scale(pipe_down, (PIPE_WIDTH,PIPE_HEIGHT))  
 pipe_up = pygame.transform.rotate(pipe_down, 180)
 base = pygame.image.load("assets/sprites/base.png")
+game_over = pygame.image.load("assets/sprites/gameover.png")
 score_sprites = {
     '0': pygame.image.load("assets/sprites/0.png"),
     '1': pygame.image.load("assets/sprites/1.png"),

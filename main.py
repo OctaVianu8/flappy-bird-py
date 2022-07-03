@@ -134,7 +134,9 @@ def logic():
 
         if bird_rect.colliderect(ground_rect):
             hit_sound.play()
-            time.sleep(0.5)
+            win.blit(game_over, (WIDTH/2-game_over.get_width()/2,200))
+            pygame.display.update()
+            time.sleep(1.5)
             return False
     for ground in bases:
         if (ground.x + BASE_WIDTH <= 4):
@@ -179,7 +181,6 @@ while True :
         draw()
         pygame.display.update()
         clock.tick(FPS)
-    
     running = False
     update_high_score()
 
