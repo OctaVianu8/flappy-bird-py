@@ -102,7 +102,9 @@ def logic():
     # Sky collision
     if bird.y + BIRD_HEIGHT / 2 <= 0:
         hit_sound.play()
-        time.sleep(0.5)
+        win.blit(game_over, (WIDTH/2-game_over.get_width()/2,200))
+        pygame.display.update()
+        time.sleep(1.5)
         return False
 
     global score
@@ -113,7 +115,9 @@ def logic():
 
         if bird_rect.colliderect(pipe_up_rect) or bird_rect.colliderect(pipe_down_rect):
             hit_sound.play()
-            time.sleep(0.5)
+            win.blit(game_over, (WIDTH/2-game_over.get_width()/2,200))
+            pygame.display.update()
+            time.sleep(1.5)
             return False
         
         if abs(bird.x - (pipe_pair.x + PIPE_WIDTH / 2) ) <= 3:
