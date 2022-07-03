@@ -1,7 +1,5 @@
 import pygame
-
-birdUpImage = pygame.image.load("assets/sprites/bluebird-downflap.png")
-birdDownImage = pygame.image.load("assets/sprites/bluebird-upflap.png")
+from sprites import *
 
 # Creating the bird
 birdAcceleration = 0.6
@@ -12,12 +10,12 @@ size = width, height = 800, 800
 win = pygame.display.set_mode(size)
 
 class BirdObj:
+    birdFallSpeed = 0
+    birdImage = downflap
 
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.birdFallSpeed = 0
-        self.birdImage = birdUpImage
         
     def draw(self):
         win.blit(self.birdImage, (self.x, self.y))
@@ -29,9 +27,9 @@ class BirdObj:
             self.birdFallSpeed = maxFallSpeed
 
         if self.birdFallSpeed < 0 :
-            self.birdImage = birdUpImage
+            self.birdImage = downflap
         elif self.birdFallSpeed > 0 :
-            self.birdImage = birdDownImage
+            self.birdImage = upflap
         self.updateImage()
 
     def updateImage(self):
