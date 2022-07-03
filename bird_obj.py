@@ -12,12 +12,12 @@ size = width, height = 800, 800
 win = pygame.display.set_mode(size)
 
 class BirdObj:
+    birdFallSpeed = 0
+    birdImage = birdUpImage
 
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.birdFallSpeed = 0
-        self.birdImage = birdUpImage
         
     def draw(self):
         win.blit(self.birdImage, (self.x, self.y))
