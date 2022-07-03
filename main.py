@@ -130,7 +130,7 @@ def logic():
 
 while True :
     initialize()
-
+    
     running = False
     while running == False :
         for event in pygame.event.get():
@@ -139,6 +139,8 @@ while True :
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     running = True
+            if event.type == pygame.MOUSEBUTTONUP:
+                running = True
     
     while running:
         for event in pygame.event.get():
@@ -146,6 +148,7 @@ while True :
                 pygame.quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
+                    wing_sound.play()
                     bird.resetSpeed()
             if event.type == pygame.MOUSEBUTTONUP:
                 wing_sound.play()
