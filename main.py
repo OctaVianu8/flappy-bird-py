@@ -2,6 +2,8 @@ import sys
 import random
 import pygame
 
+from bird_obj import BirdObj
+
 # Creating the window
 pygame.init()
 size = width, height = 800, 800
@@ -11,46 +13,6 @@ clock = pygame.time.Clock()
 fps = 24
 
 running = True
-
-# Creating the bird
-birdUpImage = pygame.image.load("assets/sprites/bluebird-downflap.png")
-birdDownImage = pygame.image.load("assets/sprites/bluebird-upflap.png")
-birdAcceleration = 0.5
-fallResetSpeed = -15
-maxFallSpeed = 15
-maxAscentSpeed = -8
-
-class BirdObj:
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.birdFallSpeed = 0
-        self.birdImage = birdUpImage
-        
-    def draw(self):
-        win.blit(self.birdImage, (self.x, self.y))
-
-    def update(self):
-        self.y += self.birdFallSpeed
-        self.birdFallSpeed += birdAcceleration
-        if self.birdFallSpeed > maxFallSpeed :
-            self.birdFallSpeed = maxFallSpeed
-
-        if self.birdFallSpeed < 0 :
-            self.birdImage = birdUpImage
-        elif self.birdFallSpeed > 0 :
-            self.birdImage = birdDownImage
-        self.updateImage()
-
-    def updateImage(self):
-        angle = -self.birdFallSpeed*1.5
-        self.birdImage = pygame.transform.rotate(self.birdImage, angle)
-
-    def resetSpeed(self):
-        self.birdFallSpeed += fallResetSpeed
-        if self.birdFallSpeed < maxAscentSpeed :
-            self.birdFallSpeed = maxAscentSpeed
 
 bird = BirdObj(300,400)
 
