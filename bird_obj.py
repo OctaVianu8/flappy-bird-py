@@ -1,4 +1,5 @@
 import pygame
+from constants import *
 from sprites import *
 
 # Creating the bird
@@ -6,8 +7,6 @@ birdAcceleration = 0.6
 fallResetSpeed = -15
 maxFallSpeed = 15
 maxAscentSpeed = -8
-size = width, height = 800, 800
-win = pygame.display.set_mode(size)
 
 class BirdObj:
     birdFallSpeed = 0
